@@ -22,10 +22,20 @@ function getAvatarLink() {
 <template>
   <header class="topbar">
     <icon class="sidebar-toggle" name="nav-menu" @click="$emit('toggleSidebar')" />
+
     <div :data-name="name" class="name">
       {{ name }}
     </div>
-    <panel-search v-if="props.user" />
-    <router-link v-if="props.user" v-hotkey="'g a'" :to="{ name: 'Self' }"><img class="avatar" :src="getAvatarLink()" /></router-link>
+
+    <panel-search v-if="props.user" class="global-search" />
+
+    <router-link
+      v-if="props.user"
+      v-hotkey="'g a'"
+      :to="{ name: 'Self' }"
+      class="avatar-link"
+    >
+      <img class="avatar" :src="getAvatarLink()" />
+    </router-link>
   </header>
 </template>

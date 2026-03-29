@@ -1,0 +1,168 @@
+@use '../mixins' as *;
+
+.list-type-grid {
+  .main .list {
+    @include breakpoint(md) {
+      @include gridlist;
+    }
+
+    @include breakpoint-only(xs) {
+      @include baselist;
+    }
+  }
+
+  @each $t in ('server', 'node', 'user', 'template') {
+    .#{$t}list {
+      @include card;
+      @include cols(12);
+      .list {
+        .list-item a:focus-visible {
+          outline: none;
+          .#{$t}, .createLink {
+            outline: 3px solid var(--primary);
+            outline-offset: -3px;
+          }
+        }
+        @include gridlist;
+        .#{$t} {
+          @include card;
+          background: color-mix(in srgb, var(--background) 87.5%, #fff0 12.5%);
+          margin-top: 0;
+        }
+        .#{$t}:not(.disabled) {
+          @include link;
+          &:hover {
+            background: color-mix(in srgb, var(--primary) 20%, color-mix(in srgb, var(--background) 85%, #fff0 15%) 80%);
+          }
+        }
+        .#{$t}.disabled {
+          background-color: var(--backdrop);
+        }
+
+        @include breakpoint-only(xs) {
+          grid-gap: .75rem;
+          gap: .75rem;
+          .list-item {
+            padding: 0;
+            a {
+              width: 100%;
+            }
+          }
+        }
+      }
+
+      .list-item {
+        min-width: 0;
+      }
+
+      .#{$t} {
+        .title, .subline {
+          overflow: clip visible;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-width: 100%;
+        }
+
+        .title {
+          display: inline-block;
+        }
+
+        .subline {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+@include high-contrast-mode {
+  &.list-type-grid {
+    @each $t in ('server', 'node', 'user', 'template') {
+      .#{$t}list {
+        .list {
+          .list-item a:focus-visible {
+            outline: none;
+            .#{$t}, .createLink {
+              outline: 3px solid var(--primary);
+              outline-offset: -3px;
+            }
+            .#{$t} .title, .createLink {
+              text-decoration: underline;
+            }
+          }
+          @include breakpoint(md) {
+            .#{$t} {
+              border: 2px solid var(--text);
+              font-weight: bold;
+            }
+            .#{$t}.disabled {
+              border-color: var(--text-disabled);
+            }
+          }
+
+          @include breakpoint-only(xs) {
+            .#{$t} {
+              @include card;
+              border: 2px solid var(--text);
+              font-weight: bold;
+            }
+            .#{$t}.disabled {
+              border-color: var(--text-disabled);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.list-type-list {
+  .main .list {
+    @include baselist;
+  }
+
+  @each $t in ('server', 'node', 'user', 'template') {
+    .#{$t}list {
+      @include card;
+      @include cols(12);
+      max-width: calc(100% - 2em);
+      .list {
+        @include baselist;
+        .list-item {
+          padding: 0;
+          a {
+            width: 100%;
+          }
+        }
+        .#{$t} {
+          @include link;
+          padding: 1em;
+        }
+        .createLink {
+          margin-top: 1em;
+        }
+      }
+
+      .list-item {
+        min-width: 0;
+      }
+
+      .#{$t} {
+        .title, .subline {
+          overflow: clip visible;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-width: 100%;
+        }
+
+        .title {
+          display: inline-block;
+        }
+
+        .subline {
+          display: block;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,107 @@
+@mixin dark {
+  // Status colors — neon-pop against dark canvas
+  --success-bg:  #00E67630;
+  --success:     #00E676;
+  --info-bg:     #00E5FF30;
+  --info:        #00E5FF;
+  --warning-bg:  #FFD60030;
+  --warning:     #FFD600;
+  --error-bg:    #FF174430;
+  --error:       #FF1744;
+
+  // Canvas layers
+  --backdrop:        #070B13;
+  --background:      #0D1320;
+  --code-background: #050910;
+
+  // Typography
+  --text:          rgba(224, 237, 255, 0.92);
+  --text-disabled: rgba(148, 163, 184, 0.5);
+
+  // Misc
+  --servertype-icon-filter: brightness(0.6);
+  --ace-theme: monokai;
+
+  // Chart.js
+  --chartjs-tooltip-background-color: rgba(7, 11, 19, 0.9);
+  --chartjs-grid-color:               color-mix(in srgb, var(--primary) 7%, transparent);
+
+  // Scrollbar shadow
+  --scrollshadow-color: #050910;
+}
+
+@mixin dark-highcontrast {
+  --success-bg:  #00E67640;
+  --success:     #00E676;
+  --info-bg:     #00E5FF40;
+  --info:        #00E5FF;
+  --warning-bg:  #FFD60040;
+  --warning:     #FFD600;
+  --error-bg:    #FF174440;
+  --error:       #FF1744;
+
+  --backdrop:        #000;
+  --background:      #040710;
+  --code-background: #000;
+
+  --text:          rgba(224, 237, 255, 1);
+  --text-disabled: rgba(224, 237, 255, 0.66);
+
+  --servertype-icon-filter: none;
+  --ace-theme: vibrant_ink;
+
+  --chartjs-tooltip-background-color: rgba(4, 7, 16, 0.95);
+  --chartjs-grid-color:               color-mix(in srgb, var(--primary) 14%, transparent);
+
+  --scrollshadow-color: #0000;
+}
+
+@mixin light {
+  // Cyber-light: cooler whites, still distinctly cyber
+  --success-bg:  #00E67630;
+  --success:     #00C853;
+  --info-bg:     #00B8D430;
+  --info:        #0097A7;
+  --warning-bg:  #FFD60030;
+  --warning:     #F57F17;
+  --error-bg:    #FF174430;
+  --error:       #C62828;
+
+  --backdrop:        #EBF0F8;
+  --background:      #F2F6FB;
+  --code-background: #D8E0ED;
+
+  --text:          rgba(10, 14, 30, 0.82);
+  --text-disabled: rgba(10, 14, 30, 0.48);
+
+  --servertype-icon-filter: saturate(0.8);
+  --ace-theme: github;
+
+  --chartjs-tooltip-background-color: rgba(220, 228, 240, 0.88);
+  --chartjs-grid-color:               rgba(0, 151, 167, 0.12);
+
+  --scrollshadow-color: #D8E0ED;
+}
+
+// ── Class selectors ──────────────────────────────────────────────────────────
+.mode-dark {
+  @include dark;
+}
+
+.mode-dark-highcontrast {
+  @include dark-highcontrast;
+}
+
+.mode-light, .mode-auto {
+  @include light;
+}
+
+.mode-auto {
+  @media (prefers-color-scheme: dark) {
+    @include dark;
+  }
+
+  @media (prefers-contrast: more) {
+    @include dark-highcontrast;
+  }
+}

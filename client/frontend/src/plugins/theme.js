@@ -4,6 +4,14 @@ import { extract } from '@/utils/tar'
 
 import defaultStyles from '@/themes/default/theme.scss?inline'
 import defaultManifest from '@/themes/default/manifest.json'
+import cyberStyles from '@/themes/cyber/theme.scss?inline'
+import cyberManifest from '@/themes/cyber/manifest.json'
+
+// Built-in themes that don't require API download
+const builtinThemes = {
+  'PufferPanel': { styles: defaultStyles, manifest: defaultManifest },
+  'CyberDashboard': { styles: cyberStyles, manifest: cyberManifest }
+}
 
 let api = null
 let config = null
@@ -21,7 +29,7 @@ const activeTheme = ref('')
 const themeSettings = ref({})
 const rootClasses = ref([])
 const sidebarClosedBelow = ref(1200)
-const availableThemes = ['PufferPanel']
+const availableThemes = ['CyberDashboard', 'PufferPanel']
 
 function appendStyle(style) {
   generatedStyles.textContent = generatedStyles.textContent + '\n' + style
@@ -84,7 +92,7 @@ const themeApi = {
     blobs = []
     if (availableThemes.indexOf(newTheme) === -1) {
       console.error('invalid theme selection, falling back to default')
-      newTheme = 'PufferPanel'
+      newTheme = 'CyberDashboard'
       settings = {}
     }
     activeTheme.value = newTheme
@@ -92,7 +100,22 @@ const themeApi = {
     rootClasses.value = []
     generatedStyles.textContent = ''
     const themeData = { files: [] }
-    if (newTheme !== 'PufferPanel') {
+    const builtin = builtinThemes[newTheme]
+    if (builtin) {
+      // Built-in theme — no API download needed
+      const manifest = builtin.manifest
+      styles.textContent = manifest.keepDefaultCss ? builtinThemes['PufferPanel'].styles + '\n' + builtin.styles : builtin.styles
+      sidebarClosedBelow.value = manifest.sidebarClosedBelow || 1200
+      if (manifest.keepDefaultCss && newTheme !== 'PufferPanel') {
+        Object.keys(defaultManifest.settings).filter(key => !manifest.settings[key]).map(key => {
+          handleSetting(key, defaultManifest.settings[key])
+        })
+      }
+      Object.keys(manifest.settings).map(key => {
+        handleSetting(key, manifest.settings[key], settings[key])
+      })
+    } else {
+      // External theme — download from API
       const themeFiles = extract(await api.getTheme(newTheme))
       let manifestSeen = false
       themeFiles.map(file => {
@@ -115,18 +138,18 @@ const themeApi = {
           blobs.push(url)
         })
       }
-    }
-    const manifest = newTheme === 'PufferPanel' ? defaultManifest : themeData.manifest
-    styles.textContent = newTheme === 'PufferPanel' ? defaultStyles : (manifest.keepDefaultCss ? defaultStyles + '\n' + themeData.css : themeData.css)
-    sidebarClosedBelow.value = manifest.sidebarClosedBelow || 1200
-    if (manifest.keepDefaultCss && newTheme !== 'PufferPanel') {
-      Object.keys(defaultManifest.settings).filter(key => !manifest.settings[key]).map(key => {
-        handleSetting(key, defaultManifest.settings[key])
+      const manifest = themeData.manifest
+      styles.textContent = manifest.keepDefaultCss ? defaultStyles + '\n' + themeData.css : themeData.css
+      sidebarClosedBelow.value = manifest.sidebarClosedBelow || 1200
+      if (manifest.keepDefaultCss) {
+        Object.keys(defaultManifest.settings).filter(key => !manifest.settings[key]).map(key => {
+          handleSetting(key, defaultManifest.settings[key])
+        })
+      }
+      Object.keys(manifest.settings).map(key => {
+        handleSetting(key, manifest.settings[key], settings[key])
       })
     }
-    Object.keys(manifest.settings).map(key => {
-      handleSetting(key, manifest.settings[key], settings[key])
-    })
     if (save) {
       await userSettings.set('theme', newTheme)
       await userSettings.set('themeSettings', JSON.stringify(settings))
@@ -134,8 +157,9 @@ const themeApi = {
   },
   getThemeSettings: async (theme = activeTheme.value) => {
     let definition
-    if (theme === 'PufferPanel') {
-      definition = {...defaultManifest.settings}
+    const builtin = builtinThemes[theme]
+    if (builtin) {
+      definition = {...builtin.manifest.settings}
     } else {
       const themeData = extract(await api.getTheme(theme))
       const manifest = themeData.find(t => t.name === 'manifest.json')
@@ -218,7 +242,7 @@ export default (conf) => {
       app.provide('theme', themeApi)
       app.provide('themeClasses', rootClasses)
       app.provide('sidebarClosedBelow', sidebarClosedBelow)
-      config.themes.available.filter(e => e !== 'PufferPanel').map(e => availableThemes.push(e))
+      config.themes.available.filter(e => !builtinThemes[e]).map(e => availableThemes.push(e))
       availableThemes.sort()
       api = app.config.globalProperties.$api
       userSettings = app.config.globalProperties.$userSettings

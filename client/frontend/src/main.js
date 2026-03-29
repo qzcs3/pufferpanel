@@ -87,8 +87,8 @@ apiClient
         name: 'PufferPanel'
       },
       themes: {
-        active: 'PufferPanel',
-        available: ['PufferPanel']
+        active: 'CyberDashboard',
+        available: ['CyberDashboard', 'PufferPanel']
       },
       registrationEnabled: true
     })

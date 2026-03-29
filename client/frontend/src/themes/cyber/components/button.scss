@@ -1,0 +1,223 @@
+@use '../mixins' as *;
+
+// ─── Buttons ─────────────────────────────────────────────────────────────────
+// Cyber-styled with neon glow on hover and smooth transitions
+// ─────────────────────────────────────────────────────────────────────────────
+
+.button {
+  border: none;
+  width: 100%;
+  border-radius: 10px;
+  font-family: var(--standard-font);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  height: 3rem;
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 24px;
+  cursor: pointer;
+  touch-action: manipulation;
+  text-align: center;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &:not(.icon) .icon::before {
+    font-size: 1.4em;
+    padding: 0 0.25rem;
+  }
+}
+
+#toasts .toast .button.toast, .alert .button {
+  width: unset;
+  margin: 0 0 0 1em;
+  padding: 0 1em;
+}
+
+html[dir="rtl"] #toasts .toast .button.toast, html[dir="rtl"] .alert .button {
+  margin: 0 1em 0 0;
+}
+
+// ── Neutral ──────────────────────────────────────────────────────────────────
+.button.neutral {
+  background: color-mix(in srgb, var(--primary) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--text);
+
+  .icon::before {
+    color: var(--text);
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--primary) 12%, transparent);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ── Primary ──────────────────────────────────────────────────────────────────
+.button.primary {
+  background: var(--primary);
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  box-shadow: 0 0 0 color-mix(in srgb, var(--primary) 0%, transparent);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s ease;
+
+  .icon::before {
+    color: var(--text-primary);
+  }
+
+  &:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 45%, transparent),
+                0 4px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    filter: brightness(0.95);
+    transform: translateY(0);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 30%, transparent);
+  }
+}
+
+@include high-contrast-mode {
+  .button.primary {
+    background-color: var(--background);
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    font-weight: bold;
+    box-shadow: none;
+
+    .icon::before {
+      color: var(--primary);
+    }
+
+    &:hover {
+      text-decoration: underline dashed;
+      filter: none;
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// ── Error / Danger ───────────────────────────────────────────────────────────
+.button.error {
+  background: var(--error);
+  color: #fff;
+  border: 1px solid transparent;
+
+  .icon::before {
+    color: #fff;
+  }
+
+  &:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 0 20px rgba(255, 23, 68, 0.45),
+                0 4px 16px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@include high-contrast-mode {
+  .button.error {
+    background-color: var(--background);
+    border: 2px solid var(--error);
+    color: var(--error);
+    font-weight: bold;
+    box-shadow: none;
+
+    .icon::before {
+      color: var(--error);
+    }
+
+    &:hover {
+      text-decoration: underline dashed;
+      filter: none;
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// ── Text / Ghost ─────────────────────────────────────────────────────────────
+.button.text {
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--primary);
+
+  &:hover {
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 15%, transparent);
+  }
+}
+
+@include high-contrast-mode {
+  .button.text:hover {
+    background-color: unset;
+    text-decoration: underline dashed;
+  }
+}
+
+// ── Disabled ─────────────────────────────────────────────────────────────────
+.button.disabled:not(.icon) {
+  background: rgba(148, 163, 184, 0.07);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  color: var(--text-disabled);
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none !important;
+
+  .icon::before {
+    color: var(--text-disabled);
+  }
+}
+
+@include high-contrast-mode {
+  .button.disabled:not(.icon) {
+    border: 2px solid var(--text-disabled);
+  }
+}
+
+// ── Icon-only button ─────────────────────────────────────────────────────────
+.button.icon {
+  min-width: 3rem;
+  width: 3rem;
+  padding: 9px;
+  margin: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  font-size: 1.5em;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.button.icon:not(.disabled):hover {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 20%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.button.icon.disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.button * {
+  color: inherit;
+}

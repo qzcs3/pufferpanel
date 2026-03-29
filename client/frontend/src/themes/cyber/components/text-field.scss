@@ -1,0 +1,206 @@
+@use '../mixins' as *;
+
+// ─── Text Fields ─────────────────────────────────────────────────────────────
+// Cyber glass inputs with neon focus ring
+// ─────────────────────────────────────────────────────────────────────────────
+
+.input-field-wrapper {
+  .input-field {
+    position: relative;
+    margin: 12px 0;
+    display: inline-flex;
+    flex-direction: row;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 10px;
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    width: 100%;
+    background: color-mix(in srgb, var(--primary) 3%, transparent);
+    transition: border-color 0.2s ease, outline 0.2s ease,
+                background 0.2s ease, box-shadow 0.2s ease;
+
+    &.disabled {
+      border-color: rgba(148, 163, 184, 0.1);
+      background-color: rgba(7, 11, 19, 0.5);
+      opacity: 0.6;
+    }
+
+    label {
+      position: absolute;
+      top: 0;
+      left: calc(0.75 * var(--text-field-base-size, 1rem));
+      font-size: var(--text-field-base-size, 1rem);
+      margin: var(--text-field-base-size, 1rem) 0;
+      pointer-events: none;
+      color: var(--text-disabled);
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    input {
+      background-color: transparent;
+      flex-grow: 1;
+      box-sizing: border-box;
+      padding: var(--text-field-base-size, 1rem);
+      font-size: var(--text-field-base-size, 1rem);
+      border: none;
+      outline: none;
+      width: 1px;
+      color: var(--text);
+      transition: all 0.18s ease;
+
+      &:disabled {
+        color: var(--text-disabled);
+      }
+    }
+
+    .icon.pre ~ input {
+      padding: var(--text-field-base-size, 1rem) 0;
+    }
+
+    input::placeholder {
+      color: transparent;
+    }
+
+    input:focus ~ label, input:not(:placeholder-shown) ~ label {
+      top: calc(-1.5 * var(--text-field-base-size, 1rem));
+      left: calc(0.75 * var(--text-field-base-size, 1rem));
+      font-size: 0.82em;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+
+      span {
+        position: relative;
+        padding: 0 .35em;
+      }
+
+      &::before {
+        background-color: var(--background);
+        content: '';
+        position: absolute;
+        height: 60%;
+        width: 100%;
+      }
+    }
+
+    input:focus {
+      caret-color: var(--primary);
+    }
+
+    input:focus ~ label {
+      color: var(--primary);
+    }
+
+    .icon.post.btn {
+      @include clickable;
+    }
+
+    .icon.pre {
+      padding: calc(0.5 * var(--text-field-base-size, 1rem))
+               calc(0.75 * var(--text-field-base-size, 1rem));
+      font-size: calc(2 * var(--text-field-base-size, 1rem));
+      transition: all 0.18s ease;
+    }
+
+    .icon.pre ~ label {
+      top: calc(0.25 * var(--text-field-base-size, 1rem));
+      left: calc(3.25 * var(--text-field-base-size, 1rem));
+    }
+
+    .icon.pre ~ input:focus ~ label,
+    .icon.pre ~ input:not(:placeholder-shown) ~ label {
+      top: calc(-1.5 * var(--text-field-base-size, 1rem));
+      left: 0.75em;
+    }
+
+    .icon.post::before {
+      padding: calc(0.5 * var(--text-field-base-size, 1rem))
+               calc(0.75 * var(--text-field-base-size, 1rem));
+      padding-left: 0;
+      font-size: calc(2 * var(--text-field-base-size, 1rem));
+    }
+
+    .icon.post ~ .post-tooltip {
+      position: absolute;
+      right: 0;
+      height: 3em;
+      width: 3em;
+    }
+
+    &:focus-within {
+      border-color: color-mix(in srgb, var(--primary) 50%, transparent);
+      outline: 2px solid color-mix(in srgb, var(--primary) 15%, transparent);
+      outline-offset: 0;
+      background: color-mix(in srgb, var(--primary) 5%, transparent);
+      box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 10%, transparent);
+
+      .icon.pre ~ label {
+        left: calc(0.5 * var(--text-field-base-size, 1rem));
+      }
+    }
+  }
+
+  .error {
+    color: var(--error);
+    border-color: rgba(255, 23, 68, 0.45) !important;
+    box-shadow: 0 0 12px rgba(255, 23, 68, 0.1) !important;
+
+    label, .icon {
+      color: var(--error);
+    }
+  }
+
+  span.error {
+    display: block;
+    margin-top: -6px;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+  }
+
+  .hint {
+    display: block;
+    margin-top: -6px;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 12px;
+
+    p {
+      margin: 0;
+      color: var(--text-disabled);
+      font-size: 0.85em;
+    }
+  }
+}
+
+html[dir="rtl"] .input-field-wrapper {
+  .input-field {
+    label {
+      right: calc(0.75 * var(--text-field-base-size, 1rem));
+      left: unset;
+    }
+
+    input:focus ~ label, input:not(:placeholder-shown) ~ label {
+      right: calc(0.375 * var(--text-field-base-size, 1rem));
+      left: unset;
+    }
+
+    .icon.pre ~ label {
+      right: calc(3 * var(--text-field-base-size, 1rem));
+      left: unset;
+    }
+
+    .icon.pre ~ input:not(:placeholder-shown) ~ label {
+      right: calc(0.5 * var(--text-field-base-size, 1rem));
+      left: unset;
+    }
+
+    &:focus-within {
+      .icon.pre ~ label {
+        right: calc(0.5 * var(--text-field-base-size, 1rem));
+        left: unset;
+      }
+    }
+  }
+}

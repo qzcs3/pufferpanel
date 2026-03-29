@@ -1,0 +1,657 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// _cyber-global.scss
+// Append to end of theme.scss via @use, or import after all other styles.
+// This file handles every visual surface that theme.scss controls globally.
+// ─────────────────────────────────────────────────────────────────────────────
+@use './mixins' as *;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 1. GLOBAL SCROLLBARS — ultra-thin, dark, cyber accent
+// ══════════════════════════════════════════════════════════════════════════════
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--primary) 18%, transparent) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+  border-radius: 99px;
+
+  &:hover {
+    background: color-mix(in srgb, var(--primary) 38%, transparent);
+  }
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 2. GLOBAL BODY / CANVAS
+// ══════════════════════════════════════════════════════════════════════════════
+
+body {
+  // Subtle animated noise grain over the deep-space backdrop
+  background-image:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      color-mix(in srgb, var(--primary) 4%, transparent) 0%,
+      transparent 100%
+    );
+}
+
+#root {
+  background: var(--backdrop);
+}
+
+// Global selection
+::selection {
+  background: color-mix(in srgb, var(--primary) 25%, transparent);
+  color: var(--text);
+}
+
+// Focus ring — cyber blue
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--primary) 60%, transparent);
+  outline-offset: 2px;
+}
+
+
+// ── Global neon text effect ───────────────────────────────────────────────────
+// Base: very subtle ambient glow on all text.
+// Hover on interactive elements: brighter, punchy neon.
+
+h1, h2, h3, h4, h5, h6 {
+  text-shadow: 0 0 20px color-mix(in srgb, var(--primary) 18%, transparent),
+               0 0 40px color-mix(in srgb, var(--primary) 8%, transparent);
+  transition: text-shadow 0.25s ease;
+}
+
+p, span, label, li, td, th, .label, .title {
+  text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 7%, transparent);
+}
+
+.subline, small, .text-disabled {
+  text-shadow: none; // muted text stays clean
+}
+
+// All interactive text glows more on hover
+a, .clickable, [role="button"] {
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+
+  &:hover {
+    text-shadow: 0 0 12px color-mix(in srgb, var(--primary) 55%, transparent),
+                 0 0 24px color-mix(in srgb, var(--primary) 22%, transparent);
+  }
+}
+
+// Icon glow — ambient base, flares on interaction
+.icon::before {
+  transition: color 0.2s ease, filter 0.2s ease;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--primary) 10%, transparent));
+}
+
+a:hover .icon::before,
+.clickable:hover .icon::before,
+button:hover .icon::before,
+.list-item:hover .icon::before {
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--primary) 60%, transparent));
+}
+
+// Buttons — neon text on hover (primary glow handled by button.scss)
+.button:not(.disabled):hover {
+  text-shadow: 0 0 10px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+// Server card names / titles glow on card hover
+.list-item:hover .title,
+.list-item:hover h3,
+.list-item:hover h4 {
+  text-shadow: 0 0 14px color-mix(in srgb, var(--primary) 50%, transparent),
+               0 0 28px color-mix(in srgb, var(--primary) 20%, transparent);
+  color: var(--primary);
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 3. CARD / RAISED SURFACE — glassmorphism
+// ══════════════════════════════════════════════════════════════════════════════
+
+// The .card mixin produces .raised + padding + background. We override here.
+// Any element that received @include card will pick these up.
+
+.main > *[class] {
+  // Let page-level card wrappers inherit glass look
+}
+
+// Card-level glass (serverview, userview, login, nodeview, etc.)
+.serverview,
+.usercreate,
+.templatecreate,
+.templateview,
+.nodeview,
+.nodecreate,
+.servercreate,
+.login,
+.register,
+.self:not(.loading),
+.settings .panel,
+.settings .email,
+.userview .details,
+.userview .permissions,
+.self .mfa .otp:not(:last-child),
+.self .mfa .passkeys,
+.recovery-codes {
+  background: rgba(13, 19, 32, 0.7) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 8%, transparent) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.03) inset !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    z-index: -1;
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 4. SERVER CARDS (list-type-grid) — hover scale + neon glow
+// ══════════════════════════════════════════════════════════════════════════════
+
+.list-type-grid .list-item {
+  background: rgba(13, 19, 32, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--primary) 7%, transparent);
+  border-radius: 14px !important;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s ease,
+              border-color 0.25s ease,
+              background 0.25s ease !important;
+
+  &:hover, a:hover & {
+    transform: scale(1.025) translateY(-2px);
+    border-color: color-mix(in srgb, var(--primary) 22%, transparent);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.45),
+      0 0 20px color-mix(in srgb, var(--primary) 8%, transparent);
+    background: rgba(13, 19, 32, 0.8);
+  }
+}
+
+// List-type-list rows
+.list-type-list .list-item {
+  border-radius: 10px !important;
+  transition: background 0.2s ease, box-shadow 0.2s ease !important;
+
+  &:hover, a:hover & {
+    background: color-mix(in srgb, var(--primary) 6%, transparent) !important;
+    box-shadow: inset 3px 0 0 var(--primary);
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 5. STATUS INDICATORS — neon aggressive colors
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Online — electric green
+.status.online::before {
+  color: var(--success) !important;
+  filter: drop-shadow(0 0 5px rgba(0, 230, 118, 0.7));
+}
+
+// Offline — bright crimson
+.status.offline::before {
+  color: var(--error) !important;
+  filter: drop-shadow(0 0 4px rgba(255, 23, 68, 0.5));
+}
+
+// Starting / Installing — neon yellow / cyber blue
+.status.installing::before {
+  color: var(--primary) !important;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--primary) 60%, transparent));
+}
+
+.status.unknown::before {
+  color: var(--warning) !important;
+  filter: drop-shadow(0 0 4px rgba(255, 214, 0, 0.4));
+}
+
+// Server control buttons — neon icon tints with glow on hover
+.server-controls {
+  .start:hover .icon::before {
+    filter: drop-shadow(0 0 6px rgba(0, 230, 118, 0.8));
+  }
+
+  .stop:hover .icon::before,
+  .kill:hover .icon::before {
+    filter: drop-shadow(0 0 6px rgba(255, 23, 68, 0.8));
+  }
+
+  .restart:hover .icon::before {
+    filter: drop-shadow(0 0 6px rgba(255, 214, 0, 0.6));
+  }
+
+  // Server controls popup menu — glass
+  .menu.open {
+    background: rgba(10, 14, 23, 0.88) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+
+    .button:hover {
+      background: color-mix(in srgb, var(--primary) 8%, transparent) !important;
+      border-radius: 8px;
+    }
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 6. ALERT BANNERS — frosted glass with neon left-bar
+// ══════════════════════════════════════════════════════════════════════════════
+
+.alert {
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid;
+
+  // Bottom stripe → left stripe (more cyber)
+  &::after {
+    width: 4px !important;
+    height: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    right: unset !important;
+    border-radius: 12px 0 0 12px !important;
+  }
+}
+
+.alert.success {
+  background: rgba(0, 230, 118, 0.08) !important;
+  border-color: rgba(0, 230, 118, 0.2) !important;
+  box-shadow: 0 0 20px rgba(0, 230, 118, 0.06);
+}
+
+.alert.info {
+  background: color-mix(in srgb, var(--primary) 8%, transparent) !important;
+  border-color: color-mix(in srgb, var(--primary) 20%, transparent) !important;
+  box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 6%, transparent);
+}
+
+.alert.warning {
+  background: rgba(255, 214, 0, 0.08) !important;
+  border-color: rgba(255, 214, 0, 0.2) !important;
+  box-shadow: 0 0 20px rgba(255, 214, 0, 0.06);
+}
+
+.alert.error {
+  background: rgba(255, 23, 68, 0.08) !important;
+  border-color: rgba(255, 23, 68, 0.2) !important;
+  box-shadow: 0 0 20px rgba(255, 23, 68, 0.06);
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 7. TOAST NOTIFICATIONS — glass + colored top border
+// ══════════════════════════════════════════════════════════════════════════════
+
+#toasts {
+  .toast {
+    background: rgba(10, 14, 23, 0.85) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
+                0 0 0 1px color-mix(in srgb, var(--primary) 4%, transparent) !important;
+    color: var(--text) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .toast.error {
+    background: rgba(255, 23, 68, 0.12) !important;
+    border-color: rgba(255, 23, 68, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
+                0 0 16px rgba(255, 23, 68, 0.1) !important;
+  }
+
+  .toast.success {
+    background: rgba(0, 230, 118, 0.1) !important;
+    border-color: rgba(0, 230, 118, 0.25) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
+                0 0 16px rgba(0, 230, 118, 0.08) !important;
+  }
+
+  .toast.in, .toast.out {
+    height: 0;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 8. OVERLAY / MODAL — deep glass sheet
+// ══════════════════════════════════════════════════════════════════════════════
+
+.overlay-backdrop {
+  background: rgba(4, 7, 16, 0.7) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  .overlay {
+    background: rgba(11, 16, 28, 0.88) !important;
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent) !important;
+    border-radius: 18px !important;
+    box-shadow:
+      0 24px 80px rgba(0, 0, 0, 0.65),
+      0 1px 0 rgba(255, 255, 255, 0.04) inset !important;
+
+    .overlay-header {
+      border-bottom: 1px solid color-mix(in srgb, var(--primary) 7%, transparent);
+      padding-bottom: 0.75em;
+      margin-bottom: 0.75em;
+    }
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 9. CONSOLE / ACE EDITOR WRAPPER
+// ══════════════════════════════════════════════════════════════════════════════
+
+#console {
+  > div:not(.alert) {
+    background: rgba(5, 9, 16, 0.9) !important;
+    border: 1px solid color-mix(in srgb, var(--primary) 8%, transparent);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 color-mix(in srgb, var(--primary) 4%, transparent);
+  }
+}
+
+.ace {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 10. PROGRESS BARS
+// ══════════════════════════════════════════════════════════════════════════════
+
+progress,
+progress::-webkit-progress-bar {
+  background: color-mix(in srgb, var(--primary) 6%, transparent) !important;
+  border-radius: 99px !important;
+  overflow: hidden;
+}
+
+progress::-webkit-progress-value {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    color-mix(in srgb, var(--primary) 70%, transparent) 100%
+  ) !important;
+  border-radius: 99px !important;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+progress::-moz-progress-bar {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    color-mix(in srgb, var(--primary) 70%, transparent) 100%
+  ) !important;
+  border-radius: 99px !important;
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 11. TABS — cyber underline with neon active
+// ══════════════════════════════════════════════════════════════════════════════
+
+.tab-buttons {
+  border-bottom: 1px solid color-mix(in srgb, var(--primary) 8%, transparent);
+  margin-bottom: 0.75em;
+
+  .tab-button {
+    border: 1px solid transparent !important;
+    margin: 0 4px;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, text-shadow 0.2s ease !important;
+    border-radius: 10px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text-disabled) !important;
+
+    .icon {
+      transition: filter 0.2s ease;
+    }
+
+    &.active {
+      border-color: var(--primary) !important;
+      color: var(--primary) !important;
+      text-shadow: 0 0 12px color-mix(in srgb, var(--primary) 70%, transparent),
+                   0 0 24px color-mix(in srgb, var(--primary) 40%, transparent) !important;
+      box-shadow: inset 0 0 16px color-mix(in srgb, var(--primary) 30%, transparent),
+                  0 0 16px color-mix(in srgb, var(--primary) 50%, transparent) !important;
+
+      .icon::before {
+        filter: drop-shadow(0 0 8px color-mix(in srgb, var(--primary) 80%, transparent));
+      }
+    }
+
+    &:hover {
+      background: color-mix(in srgb, var(--primary) 6%, transparent) !important;
+      color: var(--primary) !important;
+      border-color: color-mix(in srgb, var(--primary) 60%, transparent) !important;
+      text-shadow: 0 0 12px color-mix(in srgb, var(--primary) 60%, transparent) !important;
+      box-shadow: inset 0 0 12px color-mix(in srgb, var(--primary) 20%, transparent),
+                  0 0 12px color-mix(in srgb, var(--primary) 40%, transparent) !important;
+
+      .icon::before {
+        filter: drop-shadow(0 0 6px color-mix(in srgb, var(--primary) 60%, transparent));
+      }
+    }
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 12. TOGGLE SWITCH — neon checked state
+// ══════════════════════════════════════════════════════════════════════════════
+
+.switch-wrapper {
+  .switch:before {
+    background: rgba(148, 163, 184, 0.2) !important;
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    transition: background 0.25s ease, box-shadow 0.25s ease !important;
+  }
+
+  input:checked + .switch:before {
+    background: color-mix(in srgb, var(--primary) 85%, transparent) !important;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 40%, transparent);
+    border-color: var(--primary);
+  }
+
+  .switch:after {
+    background: #fff !important;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 13. CONTEXT MENU
+// ══════════════════════════════════════════════════════════════════════════════
+
+.context-menu {
+  background: rgba(10, 14, 23, 0.92) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55) !important;
+
+  .context-action a {
+    transition: background 0.18s ease, color 0.18s ease, text-shadow 0.18s ease !important;
+    border-radius: 8px;
+
+    &:hover {
+      background: color-mix(in srgb, var(--primary) 8%, transparent) !important;
+
+      .label {
+        color: var(--primary) !important;
+        text-shadow: 0 0 10px color-mix(in srgb, var(--primary) 50%, transparent) !important;
+      }
+
+      .icon::before {
+        color: var(--primary) !important;
+        filter: drop-shadow(0 0 6px color-mix(in srgb, var(--primary) 55%, transparent));
+      }
+    }
+  }
+}
+
+@include breakpoint-down(md) {
+  .context-menu-wrapper::before {
+    background: rgba(4, 7, 16, 0.65) !important;
+    backdrop-filter: blur(4px);
+  }
+
+  .context-menu {
+    border-radius: 18px 18px 0 0 !important;
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 14. DATA TABLE / HOTKEYS / MISC CHROME
+// ══════════════════════════════════════════════════════════════════════════════
+
+.hotkey .key {
+  background: color-mix(in srgb, var(--primary) 6%, transparent) !important;
+  border-color: color-mix(in srgb, var(--primary) 15%, transparent) !important;
+  border-radius: 6px !important;
+  font-weight: 700;
+  font-size: 0.8em;
+  color: var(--primary) !important;
+}
+
+// Tooltip
+[data-tooltip]::after {
+  background: rgba(5, 9, 16, 0.95) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  font-size: 0.82rem !important;
+  padding: 0.3rem 0.75rem !important;
+}
+
+[data-tooltip]::before {
+  border-top-color: color-mix(in srgb, var(--primary) 12%, transparent) !important;
+}
+
+// Code blocks
+code {
+  background: color-mix(in srgb, var(--primary) 6%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary) !important;
+  font-weight: 600;
+  border-radius: 6px !important;
+}
+
+pre {
+  background: rgba(5, 9, 16, 0.8) !important;
+  border-color: color-mix(in srgb, var(--primary) 10%, transparent) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+  code {
+    background: transparent !important;
+    border: none !important;
+  }
+}
+
+// HR divider — subtle neon line
+hr {
+  border-top: 1px solid color-mix(in srgb, var(--primary) 7%, transparent) !important;
+  opacity: 1 !important;
+}
+
+// File manager selected state
+.file-manager .file-list .file.selected {
+  background: color-mix(in srgb, var(--primary) 10%, transparent) !important;
+  border-radius: 8px;
+}
+
+.file-manager .file-list .file:hover {
+  background: color-mix(in srgb, var(--primary) 6%, transparent) !important;
+  border-radius: 8px;
+}
+
+// Color input
+.color-input {
+  background: color-mix(in srgb, var(--primary) 3%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 14%, transparent) !important;
+  border-radius: 10px !important;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--primary) 30%, transparent) !important;
+  }
+}
+
+// Login page — slightly larger glass card, centered glow
+.login, .register {
+  box-shadow:
+    0 0 60px color-mix(in srgb, var(--primary) 6%, transparent),
+    0 24px 80px rgba(0, 0, 0, 0.5) !important;
+}
+
+// Server header name
+.server-header .name {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+// Typography: headings
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.01em;
+}
+
+h1 { font-weight: 800; }
+h2 { font-weight: 700; }
+h3 { font-weight: 700; }

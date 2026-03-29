@@ -1,0 +1,440 @@
+@use '../mixins' as *;
+
+// ─── Topbar ───────────────────────────────────────────────────────────────────
+// Layout: [logo LEFT] ── [search BAR CENTER] ── [avatar RIGHT]
+// Color logic: uses --primary for glow + accents
+// ─────────────────────────────────────────────────────────────────────────────
+
+.topbar {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 64px;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+
+  background: rgba(10, 14, 23, 0.78);
+  backdrop-filter: blur(14px) saturate(175%);
+  -webkit-backdrop-filter: blur(14px) saturate(175%);
+
+  // Use primary color for borders
+  border-bottom: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
+
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--primary) 10%, transparent),
+    0 10px 40px rgba(0, 0, 0, 0.6),
+    0 0 28px color-mix(in srgb, var(--primary) 10%, transparent);
+
+  // Neon accent strip
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--primary) 95%, white 5%),
+      color-mix(in srgb, var(--primary) 70%, white 30%),
+      color-mix(in srgb, var(--primary) 95%, white 5%),
+      transparent
+    );
+
+    filter: blur(0.6px);
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  // Glow overlay
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: radial-gradient(
+      circle at 50% 0%,
+      color-mix(in srgb, var(--primary) 18%, transparent),
+      transparent 65%
+    );
+
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  // ── LEFT: Branding / page name ─────────────────────────────────────────────
+  .name {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+
+    margin: 0 16px;
+    line-height: 64px;
+
+    font-family: var(--title-font);
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    // TEXT COLOR follows chosen theme
+    color: var(--primary);
+
+    // Glow follows theme
+    text-shadow:
+      /* Layer 1: The "core" - wider and much more transparent */
+      0 0 15px color-mix(in srgb, var(--primary) 30%, transparent),
+      /* Layer 2: The "glow" - pushed out further */
+      0 0 40px color-mix(in srgb, var(--primary) 20%, transparent),
+      /* Layer 3: The "bloom" - very wide and subtle */
+      0 0 80px color-mix(in srgb, var(--primary) 10%, transparent);
+
+    transition: text-shadow 0.25s ease, color 0.25s ease;
+
+    &:hover {
+      text-shadow:
+        0 0 20px color-mix(in srgb, var(--primary) 45%, transparent),
+        0 0 55px color-mix(in srgb, var(--primary) 30%, transparent),
+        0 0 100px color-mix(in srgb, var(--primary) 15%, transparent);
+
+    }
+  }
+
+  // ── CENTER: Global search bar ──────────────────────────────────────────────
+  .global-search {
+    /* REMOVE flex and margin */
+    /* flex: 1 1 auto; */
+    /* margin: 0 auto; */
+
+    /* ADD these 3 lines to force absolute centering */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* Keep all your existing rules below */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    max-width: 320px;
+    transition: max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --text-field-base-size: 15px;
+
+    .input-field-wrapper {
+      width: 100%;
+    }
+
+    .input-field-wrapper .input-field {
+      margin: 0;
+      border-style: none;
+      border-radius: 12px;
+
+      background: color-mix(in srgb, var(--primary) 7%, rgba(0, 0, 0, 0.2));
+      border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+
+      box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--primary) 10%, transparent),
+        0 0 18px color-mix(in srgb, var(--primary) 8%, transparent);
+
+      transition: all 0.25s ease;
+
+      input {
+        caret-color: var(--primary);
+        color: var(--text);
+        background: transparent;
+
+        &::placeholder {
+          color: rgba(148, 163, 184, 0.55);
+        }
+      }
+
+      .pre {
+        cursor: pointer;
+        transform-origin: center;
+      }
+
+      .icon::before {
+        color: color-mix(in srgb, var(--primary) 65%, white 35%);
+      }
+    }
+
+    &:focus-within {
+      max-width: 640px;
+
+      .input-field-wrapper .input-field {
+        background: color-mix(in srgb, var(--primary) 10%, rgba(0, 0, 0, 0.2));
+        border-color: color-mix(in srgb, var(--primary) 55%, transparent);
+
+        box-shadow:
+          0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent),
+          0 0 24px color-mix(in srgb, var(--primary) 20%, transparent),
+          inset 0 0 0 1px color-mix(in srgb, var(--primary) 12%, transparent);
+
+        border-radius: 12px;
+
+        .pre {
+          cursor: default;
+
+          @include breakpoint-down(xs) {
+            padding: .5rem 0;
+            transform: scale(.75);
+          }
+        }
+
+        .icon::before {
+          color: var(--primary);
+        }
+      }
+    }
+
+    // Search results dropdown
+    .results {
+      background: rgba(7, 11, 19, 0.96);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+
+      border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+      border-radius: 16px;
+
+      box-shadow:
+        0 16px 56px rgba(0, 0, 0, 0.72),
+        0 0 0 1px color-mix(in srgb, var(--primary) 10%, transparent),
+        0 0 46px color-mix(in srgb, var(--primary) 10%, transparent);
+
+      position: fixed;
+      top: 72px;
+      left: 12px;
+      right: 12px;
+
+      max-height: calc(100vh - (72px + 24px + 2em));
+      overflow-y: auto;
+
+      @include breakpoint(md) {
+        left: 32px;
+        right: 32px;
+      }
+
+      @include breakpoint(lg) {
+        left: 72px;
+        right: 72px;
+      }
+
+      h3 {
+        margin-bottom: 0;
+        color: color-mix(in srgb, var(--primary) 65%, white 35%);
+        font-size: 0.72em;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        padding: 0.75em 0.75em 0.25em;
+
+        text-shadow:
+          0 0 10px color-mix(in srgb, var(--primary) 35%, transparent),
+          0 0 18px color-mix(in srgb, var(--primary) 18%, transparent);
+      }
+
+      h4 {
+        margin: 0.5em 0.25em;
+        color: var(--text);
+
+        text-shadow:
+          0 0 10px color-mix(in srgb, var(--primary) 18%, transparent),
+          0 0 22px color-mix(in srgb, var(--primary) 10%, transparent);
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .result.selected {
+          background-color: color-mix(in srgb, var(--primary) 16%, transparent);
+          box-shadow: inset 3px 0 0 var(--primary);
+        }
+      }
+
+      .result {
+        padding: 0.65em 0.85em;
+        border-radius: 10px;
+        margin: 3px 8px;
+        transition: background 0.15s ease, box-shadow 0.15s ease;
+
+        &:hover {
+          background-color: color-mix(in srgb, var(--primary) 14%, transparent);
+          box-shadow: inset 3px 0 0 var(--primary);
+
+          .title {
+            color: var(--primary);
+            text-shadow:
+              0 0 10px color-mix(in srgb, var(--primary) 55%, transparent),
+              0 0 22px color-mix(in srgb, var(--primary) 20%, transparent);
+          }
+        }
+
+        .title,
+        .subline {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-width: 100%;
+          transition: color 0.15s ease, text-shadow 0.15s ease;
+        }
+
+        .title {
+          font-weight: 600;
+          text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 18%, transparent);
+        }
+
+        .subline {
+          font-size: .85em;
+          color: var(--text-disabled);
+        }
+      }
+
+      .no-results {
+        text-align: center;
+        font-size: 1.3em;
+        color: var(--text-disabled);
+        padding: 2em;
+      }
+    }
+  }
+
+  // ── RIGHT: Profile avatar ───────────────────────────────────────────────────
+  .avatar-link {
+    flex: 0 0 auto;
+    margin-left: auto;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    display: block;
+
+    border: 2px solid color-mix(in srgb, var(--primary) 55%, transparent);
+    border-radius: 50%;
+
+    box-shadow: 0 0 14px color-mix(in srgb, var(--primary) 18%, transparent);
+
+    transition: all 0.25s ease;
+  }
+
+  .avatar-link:hover .avatar,
+  .avatar-link:focus-visible .avatar {
+    border-color: var(--primary);
+
+    box-shadow:
+      0 0 18px color-mix(in srgb, var(--primary) 55%, transparent),
+      0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+
+    transform: scale(1.06);
+  }
+}
+
+// ── High-contrast overrides ──────────────────────────────────────────────────
+@include high-contrast-mode {
+  .topbar {
+    background: var(--background);
+    border-bottom: 3px solid var(--text);
+    box-shadow: none;
+    backdrop-filter: none;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    .name {
+      color: var(--text);
+      text-shadow: none;
+    }
+
+    .avatar {
+      border-color: var(--text);
+      box-shadow: none;
+    }
+  }
+
+  .topbar .global-search {
+    .input-field-wrapper .input-field {
+      input {
+        caret-color: var(--text);
+      }
+
+      .icon::before {
+        color: var(--text);
+      }
+    }
+
+    .results {
+      border: 3px solid var(--text);
+
+      .result.selected {
+        background-color: var(--background);
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// ── Mobile sidebar toggle ────────────────────────────────────────────────────
+.sidebar-toggle {
+  display: none;
+}
+
+.topbar.sidebar-exists {
+  @include breakpoint-down(md) {
+    .sidebar-toggle {
+      @include clickable;
+      display: inline-block;
+      font-size: 30px;
+      padding: 12px 10px;
+      margin-right: -6px;
+      flex: 0 0 auto;
+
+      color: color-mix(in srgb, var(--primary) 70%, white 30%);
+      transition: color 0.2s ease;
+
+      &::before {
+        color: color-mix(in srgb, var(--primary) 70%, white 30%);
+      }
+
+      &:hover::before {
+        color: var(--primary);
+      }
+    }
+
+    .global-search {
+      max-width: calc(100vw - 200px);
+      width: 180px;
+
+      &:focus-within {
+        max-width: calc(100vw - 160px);
+        width: 260px;
+      }
+    }
+  }
+}
+
+// ── RTL support ──────────────────────────────────────────────────────────────
+html[dir="rtl"] {
+  .topbar {
+    .sidebar-toggle {
+      margin-right: 0;
+      margin-left: -6px;
+    }
+
+    .avatar-link {
+      margin-left: 12px;
+      margin-right: auto;
+    }
+  }
+}

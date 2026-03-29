@@ -1,0 +1,133 @@
+{
+  "keepDefaultCss": false,
+  "sidebarClosedBelow": 1200,
+  "settings": {
+    "mode": {
+      "type": "class",
+      "tkey": "common.theme.Mode",
+      "options": [
+        {
+          "value": "mode-dark",
+          "tkey": "common.theme.mode.Dark",
+          "default": true
+        },
+        {
+          "value": "mode-auto",
+          "tkey": "common.theme.mode.Auto"
+        },
+        {
+          "value": "mode-light",
+          "tkey": "common.theme.mode.Light"
+        },
+        {
+          "value": "mode-dark-highcontrast",
+          "tkey": "common.theme.mode.DarkHighContrast"
+        }
+      ]
+    },
+    "color": {
+      "type": "color",
+      "var": "--primary",
+      "default": "#00E5FF",
+      "derive": [
+        {
+          "type": "contrast",
+          "foreground": true,
+          "options": ["#eee", "#333"],
+          "var": "--text-primary"
+        },
+        {
+          "type": "opacity",
+          "opacity": 0.15,
+          "var": "--primary-hover"
+        }
+      ],
+      "tkey": "common.theme.BaseColor"
+    },
+    "serverTypeDisplay": {
+      "type": "class",
+      "tkey": "common.theme.ServerTypeDisplay",
+      "options": [
+        {
+          "value": "server-type-icon",
+          "tkey": "common.theme.serverTypeDisplay.IconBackground",
+          "default": true
+        },
+        {
+          "value": "server-type-icon server-type-nobackground",
+          "tkey": "common.theme.serverTypeDisplay.Icon",
+          "default": true
+        },
+        {
+          "value": "server-type-none",
+          "tkey": "common.theme.serverTypeDisplay.None"
+        }
+      ]
+    },
+    "listType": {
+      "type": "class",
+      "tkey": "common.theme.ListType",
+      "options": [
+        {
+          "value": "list-type-grid",
+          "tkey": "common.theme.listType.Grid",
+          "default": true
+        },
+        {
+          "value": "list-type-list",
+          "tkey": "common.theme.listType.List"
+        }
+      ]
+    },
+    "fontSize": {
+      "type": "snippet",
+      "tkey": "common.theme.FontSize",
+      "options": [
+        {
+          "value": ":root{font-size: calc(100% + 8px)}",
+          "label": "+4"
+        },
+        {
+          "value": ":root{font-size: calc(100% + 6px)}",
+          "label": "+3"
+        },
+        {
+          "value": ":root{font-size: calc(100% + 4px)}",
+          "label": "+2"
+        },
+        {
+          "value": ":root{font-size: calc(100% + 2px)}",
+          "label": "+1"
+        },
+        {
+          "value": ":root{font-size: 100%}",
+          "tkey": "common.theme.fontSize.Default",
+          "default": true
+        },
+        {
+          "value": ":root{font-size: calc(100% - 2px)}",
+          "label": "-1"
+        },
+        {
+          "value": ":root{font-size: calc(100% - 4px)}",
+          "label": "-2"
+        }
+      ]
+    },
+    "fontFace": {
+      "type": "snippet",
+      "tkey": "common.theme.FontFace",
+      "options": [
+        {
+          "value": "",
+          "tkey": "common.theme.fontFace.Default",
+          "default": true
+        },
+        {
+          "value": "body{--standard-font:'Atkinson Hyperlegible Next', sans-serif;--headline-font:'Atkinson Hyperlegible Next', sans-serif;--monospace-font:'Atkinson Hyperlegible Mono', monospace}",
+          "tkey": "common.theme.fontFace.A11y"
+        }
+      ]
+    }
+  }
+}
