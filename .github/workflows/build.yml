@@ -482,13 +482,13 @@ jobs:
         with:
           pattern: pufferpanel-*.rpm
 
-      - name: Push to repo
-        env:
-          PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
-        run: |
-          package_cloud push ${{ vars.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_amd64.deb 
-          package_cloud push ${{ vars.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_arm64.deb 
-          package_cloud push ${{ vars.PACKAGECLOUD_REPO }}/rpm_any/rpm_any */pufferpanel-*.x86_64.rpm 
+      #- name: Push to repo
+      #  env:
+      #    PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
+      #  run: |
+      #    package_cloud push ${{ vars.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_amd64.deb 
+      #    package_cloud push ${{ vars.PACKAGECLOUD_REPO }}/any/any */pufferpanel_*_arm64.deb 
+      #    package_cloud push ${{ vars.PACKAGECLOUD_REPO }}/rpm_any/rpm_any */pufferpanel-*.x86_64.rpm 
 
       - name: Create Release
         id: create_release
